@@ -1,6 +1,6 @@
-package MainProcess;         
+package Parser;         
 =head1 NAME
-MainProcess
+Parser
 
 =head1 DESCRIPTION 
 
@@ -25,6 +25,7 @@ our $VERSION     = 1.00;
 use POSIX qw(strftime);
 use IO::Dir;
 use XML::LibXML;
+use Crypt::Digest::SHA256;
 use File::stat qw(:FIELDS);
 use Cwd qw(abs_path);
 
@@ -37,56 +38,34 @@ our @ISA         = qw(Exporter);
 
 #-- GLOBALS -------------------------------------------------------
 use constant {
-    DEFAULT_LOG => 'rpmShare',
+    DEFAULT_LOG => 'kafkaLogger',
     FILES_RESULTS => 'filescan',
-    SCAN_RESULTS => 'rpmscan',
-    NAME => logger::CsvLogger::NAME
+    SCAN_RESULTS => 'scanresults'
 };    
 
 
 my $scansDef = { key => SCAN_RESULTS,
-                  columns => [ ['id',0],                         # 0
-                               ['tm',0],                         # 1
-                               ['dirs',0],                       # 2
-                               ['links',0],                      # 5
-                               ['emptyfiles',0],                 # 6
-                               ['regfiles',0],                   # 7
-                               ['total',0],                      # 8
-                               ['duration',0],                   # 9
-                               ['size',0]                        # 10
-                            ],
-                  extension => '.' . SCAN_RESULTS . '.csv',
-                  comment => '-' . SCAN_RESULTS . q#            filename            {results file - defaults to ' ./# . DEFAULT_LOG . '.' . SCAN_RESULTS . q#.csv'}#
+                 extension => '.' . SCAN_RESULTS . '.csv',
+                 comment => '-' . SCAN_RESULTS . q#            filename            {results file - defaults to ' ./# . DEFAULT_LOG . '.' . SCAN_RESULTS . q#.csv'}#
 };
 
 my $filesDef = { key => FILES_RESULTS,
-                  columns => [ ['tm',0],                           # 0
-                               ['name',1],                         # 1
-                               ['inode',0],                        # 2
-                               ['path',1],                         # 3
-                               ['type',1],                         # 4
-                               ['permission',0],                   # 5
-                               ['owner',1],                        # 6
-                               ['group',1],                        # 7
-                               ['size',0],                         # 8
-                               ['lastmodified',0],                 # 9
-                               ['target',1]                        # 10
-                            ],
-                  extension => '.' . FILES_RESULTS . '.csv',
-                  comment => '-' . FILES_RESULTS . q#            filename            {results file - defaults to ' ./# . DEFAULT_LOG . '.' . FILES_RESULTS . q#.csv'}#
+                 extension => '.' . FILES_RESULTS . '.csv',
+                 comment => '-' . FILES_RESULTS . q#            filename            {results file - defaults to ' ./# . DEFAULT_LOG . '.' . FILES_RESULTS . q#.csv'}#
 };
 
-our $configData = { INPUT_LOG => DEFAULT_LOG . '.txt',
-                       OUTPUT => [ $filesDef, $scansDef ]
-              };
-
+use constant {
+    CONFIG_DATA => { INPUT_LOG => DEFAULT_LOG . '.txt',
+                     OUTPUT => [ $filesDef, $scansDef ]
+                    }
+};
 
 =item C<new>
 
 ############################################################
 constructor
 
-my $logEntry = MainProcess->new()
+my $logEntry = Parser->new()
 
 The constructor returns a new C<unity::rpmsShare::rpmsShare> object which encapsulate
 the all required parsing for logEntry records from wssetup/wsupdate
@@ -141,9 +120,9 @@ sub close()
     $results->{total} = $self->{regfiles} + $self->{emptyfiles} +  $self->{links};
     $results->{duration} = time() - $self->{start_tm};
     $results->{size} = $self->{size};
-    $self->{rpmscan}->logger($results);
+    $self->{scanresults}->logger($results);
     
-    for my $cfg ( @{ $configData->{OUTPUT} }) {
+    for my $cfg ( @{ CONFIG_DATA()->{OUTPUT} }) {
         my $key = $cfg->{key};
         $self->{$key}->close();
     }
@@ -267,7 +246,8 @@ sub logEntry($$$)
         elsif ( $st->size > 0 )
         {
             $results->{type} = 'regular file' ; 
-            $results->{size} = $st->size; 
+            $results->{size} = $st->size;
+            $results->{sha} = sha256_file_hex($path.$name);
             $self->{emptyfiles}++;
         }
         else

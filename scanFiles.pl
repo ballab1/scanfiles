@@ -11,20 +11,20 @@ use warnings;
 use FindBin qw($Bin);
 use lib "$Bin";
 use ArgHandler;
-use MainProcess;
+use Parser;
 
 
 #-- GLOBALS -------------------------------------------------------
 
 # get the command line values & other default params
-my $argHash = ArgHandler->new( $mainProcess::configData );
+my $argHash = ArgHandler->new( Parser::CONFIG_DATA );
 
 # create the parser with the necessary loggers
-my $entryParser = MainProcess->new( $argHash->getParams() );
+my $parser = Parser->new( $argHash->getParams() );
 
 # process the buildlog
 eval {
-   processLog($argHash->{'infile'}, $entryParser);
+   processLog($argHash->{'infile'}, $parser);
    print 'Successfully parsed '.$argHash->{'infile'}."\n";
 };
 if ($@) 

@@ -103,10 +103,10 @@ sub getLoggerInfo
     
     my $columns = [];
     foreach my $cfg ( @{ $self->{cfg}->{OUTPUT} } ) {
-        if ($cfg->{key} eq $key) {
+      if ($cfg->{key} eq $key) {
           $columns = $cfg->{columns};
           last;
-        }
+      }
     }
     return ($self->{$key}, $columns);
 }
@@ -126,8 +126,8 @@ sub getParams
     my ($self) = @_;
     my $params = {};
     foreach my $cfg ( @{ $self->{cfg}->{OUTPUT} } ) {
-      my $key = $cfg->{key};
-      $params->{$key} = com::emc::unity::logger::CsvLogger->new($self->getLoggerInfo($key));
+        my $key = $cfg->{key};
+        $params->{$key} = logger::KafkaLogger->new($self->getLoggerInfo($key));
     }
 
     return $params;
@@ -150,7 +150,7 @@ sub usage()
     print "USAGE: $0 [options]\n";
     print "          -infile                 filename            {input log file - defaults to './".$cfg->{INPUT_LOG}.".log'}\n";
     foreach my $cfg ( @{ $cfg->{OUTPUT} } ) {
-      print "          $cfg->{comment}\n";
+        print "          $cfg->{comment}\n";
     }
     print "          -id                     'id=nnnn'           {id to relate to this capture}\n";
     print "          -help                                       {this info}\n";
@@ -182,10 +182,10 @@ sub verify
             my $base = $self->{'infile'};
             $base =~ s/\.[^.]*//;  #remove any extension
             foreach my $cfg ( @{ $self->{cfg}->{OUTPUT} } ) {
-                if ($cfg->{key} eq $key) {
+              if ($cfg->{key} eq $key) {
                   $self->{$key} = $base . $cfg->{extension};
                   last;
-                }
+              }
             }
         }
     }
