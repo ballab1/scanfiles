@@ -1,0 +1,12 @@
+requires 'Crypt::Digest::SHA256', '0.056';
+requires 'Cwd', '3.62';
+requires 'Exporter', '5.72';
+requires 'File::Basename', '2.85';
+requires 'File::Spec', '3.62';
+requires 'File::stat', '1.07'; 
+requires 'Getopt::Long', '2.49'; 
+requires 'IO::Dir', '1.07'; 
+requires 'Kafka::Librd', '0.08';
+requires 'POSIX', '1.76'; 
+requires 'Scalar::Util', '1.49'; 
+requires 'XML::LibXML', '2.0132'; 
