@@ -52,24 +52,24 @@ will output records to a CSV file
 
 sub new
 {
-    my ( $class, $config) = @_;
+    my ( $class, $config ) = @_;
 
     my $self = {};
     bless( $self, $class );
 
-    die("FATAL: No consumer_id defined!\n")  unless (defined $config->{consumer_id});
-    die("FATAL: No client.id defined!\n")  unless (defined $config->{client.id});
-    die("FATAL: No partition defined!\n")  unless (defined $config->{partition});
-    die("FATAL: No msgflags defined!\n")  unless (defined $config->{msgflags});
+    die("FATAL: No consumer_id defined!\n")  unless (defined $config->{'consumer.id'});
+    die("FATAL: No client.id defined!\n")  unless (defined $config->{'client.id'});
+    die("FATAL: No partition defined!\n")  unless (defined $config->{'partition'});
+    die("FATAL: No msgflags defined!\n")  unless (defined $config->{'msgflags'});
 
 
-    $self->{partition} = $config->{partition};
-    $self->{msgflags} = $config->{msgflags};
-    $self->{key} = $config->{key};
+    $self->{partition} = $config->{'partition'};
+    $self->{msgflags} = $config->{'msgflags'};
+    $self->{key} = $config->{'key'};
 
-    my $params = { "client.id" => $config->{client_id},
-                   "group.id" => $config->{consumer_id} };
-    $params->{"default_topic_conf"} = $config->{"topic_conf"}  if (exists $config->{"topic_conf"});
+    my $params = { 'client.id' => $config->{'client.id'},
+                   'group.id' => $config->{'consumer.id'} };
+    $params->{'default.topic.conf'} = $config->{'topic.conf'}  if (exists $config->{'topic.conf'});
     
     $self->{kafka} = Kafka::Librd->new(Kafka::Librd::RD_KAFKA_PRODUCER, $params);
 
@@ -112,8 +112,8 @@ sub logger
 {
     my ($self, $results) = @_;
     
-    my  $json = JSON->new->allow_nonref;
-    $json_text   = $json->encode( $results );
+    my $json = JSON->new->allow_nonref;
+    my $json_text = $json->encode( $results );
 
     my $kafka = $self->{kafka};
     if ($kafka->produce($self->{partition}, $self->{msgflags}, $json, $self->{key})) {

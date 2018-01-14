@@ -101,14 +101,10 @@ sub getLoggerInfo
 {
     my ($self, $key) = @_;
     
-    my $columns = [];
     foreach my $cfg ( @{ $self->{cfg}->{OUTPUT} } ) {
-      if ($cfg->{key} eq $key) {
-          $columns = $cfg->{columns};
-          last;
-      }
+      return $cfg if ($cfg->{key} eq $key);
     }
-    return ($self->{$key}, $columns);
+    return undef;
 }
 
 

@@ -44,19 +44,31 @@ use constant {
 };    
 
 
-my $scansDef = { key => SCAN_RESULTS,
-                 extension => '.' . SCAN_RESULTS . '.csv',
-                 comment => '-' . SCAN_RESULTS . q#            filename            {results file - defaults to ' ./# . DEFAULT_LOG . '.' . SCAN_RESULTS . q#.csv'}#
+use constant {
+   SCANSDEF => { 'key' => SCAN_RESULTS,
+                 'extension' => '.' . SCAN_RESULTS . '.csv',
+                 'comment' => '-' . SCAN_RESULTS . q#            filename            {results file - defaults to ' ./# . DEFAULT_LOG . '.' . SCAN_RESULTS . q#.csv'}#,
+                 'consumer.id' => '',
+                 'client.id' => '',
+                 'partition' => '',
+                 'msgflags' => '',
+                 'topic.conf' => ''
+                 },
+   FILESDEF => { 'key' => FILES_RESULTS,
+                 'extension' => '.' . FILES_RESULTS . '.csv',
+                 'comment' => '-' . FILES_RESULTS . q#            filename            {results file - defaults to ' ./# . DEFAULT_LOG . '.' . FILES_RESULTS . q#.csv'}#,
+                 'consumer.id' => '',
+                 'client.id' => '',
+                 'partition' => '',
+                 'msgflags' => '',
+                 'topic.conf' => ''
+               }
 };
 
-my $filesDef = { key => FILES_RESULTS,
-                 extension => '.' . FILES_RESULTS . '.csv',
-                 comment => '-' . FILES_RESULTS . q#            filename            {results file - defaults to ' ./# . DEFAULT_LOG . '.' . FILES_RESULTS . q#.csv'}#
-};
 
 use constant {
     CONFIG_DATA => { INPUT_LOG => DEFAULT_LOG . '.txt',
-                     OUTPUT => [ $filesDef, $scansDef ]
+                     OUTPUT => [ FILESDEF, SCANSDEF ]
                     }
 };
 

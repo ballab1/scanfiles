@@ -8,5 +8,5 @@ requires 'Getopt::Long', '2.49';
 requires 'IO::Dir', '1.07'; 
 requires 'Kafka::Librd', '0.08';
 requires 'POSIX', '1.76'; 
-requires 'Scalar::Util', '1.49'; 
+requires 'Scalar::Util', '1.46_02'; 
 requires 'XML::LibXML', '2.0132'; 
