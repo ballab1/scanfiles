@@ -2,16 +2,13 @@ package logger::XmlFileParser;
 =head1 NAME
 logger::XmlFileParser
 
-=head1 DESCRIPTION 
+=head1 DESCRIPTION
 Original file: XmlFileParser.pm
 This software parses a given file. Each line of the file has a logEntry
 
 
 The following methods are provided:
 C<processLog>   C<decode>
-
-=head1 AUTHOR
-Bob Ballantyne  2014/11/02
 
 =head1 SEE ALSO
 
@@ -46,10 +43,10 @@ process a file of logEntries using the $parser and $decoder given
 sub processXml
 {
     my ($inputfile, $reader) = @_;
-    
+
     # get the current time #
-    my $now = time;    
-    
+    my $now = time;
+
     my ($lineCount, $parsedCount) = (0, 0);
 
     # Common parser.
@@ -64,9 +61,9 @@ sub processXml
 
     my $warningsCount = $reader->reportWarnings();
     if ($warningsCount > 0) {
-        print "\nPlease report these issues to EMSD.VNX.CE.DEV.ENABLEMENT.CI\@emc.com\n";
+        print "\nPlease report these issues\n";
     }
-    
+
     # print summary of what was done #
     print "\n\nParsed ".$parsedCount.' lines out of '.$lineCount." lines read";
     print '.    '.$warningsCount.' warnings detected '  if ($warningsCount > 0);
@@ -75,7 +72,7 @@ sub processXml
     $now = time - $now;
     # Print runtime #
     printf("\nTotal running time: %02d:%02d:%02d\n\n", int($now / 3600), int(($now % 3600) / 60), int($now % 60));
-    
+
     return 1;
 }
 #########################################################################

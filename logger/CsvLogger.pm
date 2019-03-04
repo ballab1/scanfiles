@@ -1,20 +1,14 @@
-package logger::CsvLogger;         
+package logger::CsvLogger;
 =head1 NAME
 logger::CsvLogger
 
-=head1 DESCRIPTION 
+=head1 DESCRIPTION
 Original file: CsvLogger.pm
 This software outputs records to a CSV file
 
 
 The following methods are provided:
 C<new>  C<header>   C<close>   C<logger>
-
-=head1 COPYRIGHT
-(C) 2013 - 2014 EMC
-
-=head1 AUTHOR
-Bob Ballantyne  2014/11/02
 
 =head1 SEE ALSO
 
@@ -39,7 +33,7 @@ our @EXPORT_OK   = qw(close header logger);
 
 use constant {
     NAME => 0,
-    IS_STRING => 1   
+    IS_STRING => 1
 };
 
 # auto-flush IO
@@ -52,7 +46,7 @@ constructor
 
 my $log = unity::logger::CsvLogger->new($filename, \@columnDefs)
 
-The constructor returns a new C<unity::common::CsvLogger> object which 
+The constructor returns a new C<unity::common::CsvLogger> object which
 will output records to a CSV file
 
 =cut
@@ -72,7 +66,7 @@ sub new
   open ($self->{FILE}, '>', $fileName)   or die("FATAL: Failed to open($fileName) for logging:$!\n");
   $self->{headerWritten} = 0;
   $self->{lines} = 0;
- 
+
   return $self;
 }
 
@@ -92,7 +86,7 @@ sub header
 {
     my ($self) = @_;
     $self->{headerWritten} = 1;
-    
+
     my $FILE = $self->{FILE};
     my $x = 0;
     for my $comp (@{ $self->{columnNames} }) {
@@ -141,7 +135,7 @@ sub logger
     my ($self, $results) = @_;
 
     $self->header()  if ($self->{headerWritten} == 0);
-    
+
     my $FILE = $self->{FILE};
     my $x = 0;
     for my $comp (@{ $self->{columnNames} }) {
@@ -155,7 +149,7 @@ sub logger
                 $val =~ s/"/\\"/g;
                 $val =~ s/\n/\\n/g;
                 $val = '"' . encode('utf8', $val) . '"'  if (length($val) > 0);
-                
+
             }
             print $FILE $val;
         }
